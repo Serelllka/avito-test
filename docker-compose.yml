@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  avito-test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: ./docker/wait-for-postgres.sh postgres ./avito-test
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    environment:
+      - DB_PASSWORD=qwerty
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: avito
+    ports:
+      - 5432:5432
