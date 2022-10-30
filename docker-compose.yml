@@ -3,8 +3,8 @@ services:
   avito-test:
     build:
       context: .
-      dockerfile: docker/Dockerfile
-    command: ./docker/wait-for-postgres.sh postgres ./avito-test
+      dockerfile: ./docker/Dockerfile
+    command: ./avito-test
     ports:
       - 8000:8000
     depends_on:
@@ -23,3 +23,8 @@ services:
       POSTGRES_DB: avito
     ports:
       - 5432:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
