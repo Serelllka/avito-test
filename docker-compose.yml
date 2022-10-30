@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  avito-test:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    command: ./avito-test
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    environment:
+      - DB_PASSWORD=qwerty
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: avito
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
