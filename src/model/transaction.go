@@ -14,5 +14,6 @@ type Transaction struct {
 	ProducerId  int
 	ConsumerId  int
 	Description string
+	Amount      uint
 	Type        TransactionType
 }

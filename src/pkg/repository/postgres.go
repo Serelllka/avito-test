@@ -9,6 +9,7 @@ import (
 const (
 	usersTable            = "users_account"
 	usersTransactionTable = "transactions"
+	usersBalanceView      = "account_balance"
 )
 
 type Config struct {
