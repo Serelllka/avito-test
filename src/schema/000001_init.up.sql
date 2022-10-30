@@ -7,16 +7,22 @@ CREATE TABLE IF NOT EXISTS users_account
     name            VARCHAR(255)    NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS services
+(
+    id                  SERIAL NOT NULL UNIQUE,
+    description         VARCHAR(255)
+);
+
 CREATE TABLE IF NOT EXISTS transactions
 (
     id                  SERIAL                              NOT NULL UNIQUE,
     producer_id         INT REFERENCES users_account(id),
     consumer_id         INT REFERENCES users_account(id),
+    service_id          INT REFERENCES services(id),
     amount              UINT4                               NOT NULL,
     transaction_type    INT                                 NOT NULL,
     description         VARCHAR(255)
 );
-
 
 CREATE VIEW account_balance AS
 (
