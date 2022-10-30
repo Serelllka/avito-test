@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS transactions
 CREATE VIEW account_balance AS
 (
     SELECT ua.id,
-    (SELECT sum(innerTr.amount) FROM transactions AS innerTr
-        WHERE innerTr.consumer_id = ua.id) as income,
-    (SELECT sum(innerTr.amount) FROM transactions AS innerTr
-        WHERE innerTr.producer_id = ua.id) as outcome
-    FROM users_account as ua
+    (SELECT COALESCE(sum(innerTr.amount), 0) FROM transactions AS innerTr
+        WHERE innerTr.consumer_id = ua.id) AS income,
+    (SELECT COALESCE(sum(innerTr.amount), 0) FROM transactions AS innerTr
+        WHERE innerTr.producer_id = ua.id) AS outcome
+    FROM users_account AS ua
 );
