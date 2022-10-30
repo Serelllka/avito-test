@@ -22,4 +22,4 @@ docker-compose up avito-test
 
 **Примеры запросов:**
 
-[Конфигурация для postman](https://pastebin.com/gmsnDngS)
+[Конфигурация для postman](https://pastebin.com/VXdyPAi0)
