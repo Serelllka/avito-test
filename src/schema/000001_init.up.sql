@@ -17,3 +17,13 @@ CREATE TABLE IF NOT EXISTS transactions
     description         VARCHAR(255)
 );
 
+
+CREATE VIEW account_balance AS
+(
+    SELECT ua.id,
+    (SELECT sum(innerTr.amount) FROM transactions AS innerTr
+        WHERE innerTr.consumer_id = ua.id) as income,
+    (SELECT sum(innerTr.amount) FROM transactions AS innerTr
+        WHERE innerTr.producer_id = ua.id) as outcome
+    FROM users_account as ua
+);
