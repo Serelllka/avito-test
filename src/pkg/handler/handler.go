@@ -22,6 +22,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		transaction.POST("/", h.createTransaction)
 	}
-	router.POST("/", h.createUser)
+	user := router.Group("/user")
+	{
+		user.POST("/", h.createUser)
+	}
 	return router
 }
