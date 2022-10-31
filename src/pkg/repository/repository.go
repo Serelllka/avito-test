@@ -17,10 +17,9 @@ type UserAccount interface {
 }
 
 type Transaction interface {
-	CreateTransaction(transaction dto.Transaction, trType model.TransactionType) (int, error)
-	CreateRemittance(transaction dto.Transaction) (int, error)
-	CreateDeposit(transaction dto.Transaction) (int, error)
-	CreateReservation(transaction dto.Transaction) (int, error)
+	CreateRemittance(transaction dto.Remittance) (int, error)
+	CreateDeposit(transaction dto.Deposit) (int, error)
+	CreateReservation(transaction dto.Reservation) (int, error)
 }
 
 type Repository struct {
