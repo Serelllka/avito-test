@@ -59,12 +59,12 @@ func validateTransaction(transaction *dto.Transaction, trType model.TransactionT
 		return nil
 	case model.Reservation:
 		transaction.ConsumerId = 0
-		if transaction.ProducerId == 0 {
+		if transaction.ProducerId == 0 || transaction.ServiceId == 0 {
 			break
 		}
 		return nil
 	default:
 		return fmt.Errorf("uresolved transaction type %d", trType)
 	}
-	return fmt.Errorf("consumer or producer id can't be null with given transaction type: %d", trType)
+	return fmt.Errorf("consumer, producer, service id can't be null with given transaction type: %d", trType)
 }

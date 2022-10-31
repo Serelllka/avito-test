@@ -91,8 +91,8 @@ func (r *TransactionPostgres) CreateReservation(transaction dto.Transaction) (in
 
 	id, err := executeQuery(
 		tx,
-		fmt.Sprintf("INSERT INTO %s (transaction_type, producer_id, amount, description) "+
-			"VALUES ($1, $2, $3, $4) RETURNING id", usersTransactionTable),
+		fmt.Sprintf("INSERT INTO %s (transaction_type, producer_id, service_id, amount, description) "+
+			"VALUES ($1, $2, $3, $4, $5) RETURNING id", usersTransactionTable),
 		model.Reservation,
 		transaction,
 	)
@@ -117,7 +117,7 @@ func executeQuery(db queryExecutor, query string, trType model.TransactionType, 
 	case model.Deposit:
 		row = db.QueryRow(query, trType, tr.ConsumerId, tr.Amount, tr.Description)
 	case model.Remittance:
-		row = db.QueryRow(query, trType, tr.ProducerId, tr.ConsumerId, tr.Amount, tr.Description)
+		row = db.QueryRow(query, trType, tr.ProducerId, tr.ServiceId, tr.ConsumerId, tr.Amount, tr.Description)
 	case model.Reservation:
 		row = db.QueryRow(query, trType, tr.ProducerId, tr.Amount, tr.Description)
 	default:

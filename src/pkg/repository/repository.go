@@ -6,6 +6,11 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type Service interface {
+	CreateService(service dto.Service) (int, error)
+	FindServiceById(id int) (model.Service, error)
+}
+
 type UserAccount interface {
 	CreateUserAccount(userDto dto.CreateUser) (int, error)
 	FindUserAccount(id int) (model.UserAccount, error)

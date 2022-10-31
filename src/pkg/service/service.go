@@ -19,6 +19,10 @@ type Transaction interface {
 	CreateReservation(transaction dto.Transaction) (int, error)
 }
 
+type Maintenance interface {
+	CreateService() (int, error)
+}
+
 type Service struct {
 	UserAccount
 	Transaction
