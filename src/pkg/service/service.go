@@ -14,7 +14,9 @@ type UserAccount interface {
 type Transaction interface {
 	CreateRemittance(transaction dto.Remittance) (int, error)
 	CreateDeposit(transaction dto.Deposit) (int, error)
+
 	CreateReservation(transaction dto.Reservation) (int, error)
+	CreatePayment(transaction dto.Reservation) (int, error)
 }
 
 type Maintenance interface {

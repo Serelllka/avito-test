@@ -100,3 +100,7 @@ func (r *TransactionPostgres) CreateReservation(res dto.Reservation) (int, error
 
 	return id, tx.Commit()
 }
+
+func (r *TransactionPostgres) CreatePayment(transaction dto.Reservation) (int, error) {
+	return 0, fmt.Errorf("not implemented yet")
+}

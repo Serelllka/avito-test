@@ -24,3 +24,7 @@ func (s *TransactionService) CreateDeposit(transaction dto.Deposit) (int, error)
 func (s *TransactionService) CreateReservation(transaction dto.Reservation) (int, error) {
 	return s.repo.CreateReservation(transaction)
 }
+
+func (s *TransactionService) CreatePayment(transaction dto.Reservation) (int, error) {
+	return s.repo.CreatePayment(transaction)
+}
