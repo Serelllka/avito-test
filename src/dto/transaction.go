@@ -24,8 +24,8 @@ type Remittance struct {
 
 type Reservation struct {
 	ProducerId  int    `json:"producerId" binding:"required"`
-	ServiceId   int    `json:"serviceId"`
-	OrderId     int    `json:"orderId"`
-	Description string `json:"description"`
-	Amount      uint   `json:"amount"`
+	ServiceId   int    `json:"serviceId" binding:"required"`
+	OrderId     int    `json:"orderId" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	Amount      uint   `json:"amount" binding:"required"`
 }
