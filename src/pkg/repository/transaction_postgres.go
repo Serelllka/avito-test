@@ -71,7 +71,7 @@ func (r *TransactionPostgres) CreateRemittance(transaction dto.Transaction) (int
 
 func (r *TransactionPostgres) CreateDeposit(transaction dto.Transaction) (int, error) {
 	query := fmt.Sprintf("INSERT INTO %s (transaction_type, consumer_id, amount, description) "+
-		"VALUES ($1, $2, $3, $4, $5) RETURNING id", usersTransactionTable)
+		"VALUES ($1, $2, $3, $4) RETURNING id", usersTransactionTable)
 
 	return executeQuery(r.db, query, model.Deposit, transaction)
 }
@@ -96,7 +96,7 @@ func (r *TransactionPostgres) CreateReservation(transaction dto.Transaction) (in
 
 	id, err := executeQuery(
 		tx,
-		fmt.Sprintf("INSERT INTO %s (transaction_type, producer_id, service_id, amount, description) "+
+		fmt.Sprintf("INSERT INTO %s (transaction_type, producer_id, service_id, amount, description, order_id) "+
 			"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", usersTransactionTable),
 		model.Reservation,
 		transaction,
@@ -124,7 +124,7 @@ func executeQuery(db queryExecutor, query string, trType model.TransactionType, 
 	case model.Remittance:
 		row = db.QueryRow(query, trType, tr.ProducerId, tr.ConsumerId, tr.Amount, tr.Description)
 	case model.Reservation:
-		row = db.QueryRow(query, trType, tr.ProducerId, tr.Amount, tr.Description)
+		row = db.QueryRow(query, trType, tr.ProducerId, tr.ServiceId, tr.Amount, tr.Description, tr.OrderId)
 	default:
 		return 0, fmt.Errorf("unsupported transaction type")
 	}
