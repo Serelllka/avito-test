@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS transactions
     producer_id         INT REFERENCES users_account(id),
     consumer_id         INT REFERENCES users_account(id),
     service_id          INT REFERENCES services(id),
+    order_id            INT,
     amount              UINT4                               NOT NULL,
     transaction_type    INT                                 NOT NULL,
     description         VARCHAR(255)
