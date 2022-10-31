@@ -20,16 +20,18 @@ type Transaction interface {
 }
 
 type Maintenance interface {
-	CreateService() (int, error)
+	CreateService(service dto.Service) (int, error)
 }
 
 type Service struct {
+	Maintenance
 	UserAccount
 	Transaction
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
+		NewMaintenanceService(repo.Service),
 		NewUserAccountService(repo.UserAccount),
 		NewTransactionService(repo.Transaction),
 	}

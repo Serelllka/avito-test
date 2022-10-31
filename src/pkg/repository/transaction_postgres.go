@@ -44,7 +44,6 @@ func (r *TransactionPostgres) CreateRemittance(transaction dto.Transaction) (int
 
 	query := fmt.Sprintf("SELECT id, income, outcome FROM %s WHERE id = $1", usersBalanceView)
 	if err = tx.Get(&balance, query, transaction.ProducerId); err != nil {
-		fmt.Println("Im probably here!")
 		_ = tx.Rollback()
 		return 0, err
 	}
@@ -61,12 +60,18 @@ func (r *TransactionPostgres) CreateRemittance(transaction dto.Transaction) (int
 		model.Remittance,
 		transaction,
 	)
+
+	if err != nil {
+		_ = tx.Rollback()
+		return 0, err
+	}
+
 	return id, tx.Commit()
 }
 
 func (r *TransactionPostgres) CreateDeposit(transaction dto.Transaction) (int, error) {
 	query := fmt.Sprintf("INSERT INTO %s (transaction_type, consumer_id, amount, description) "+
-		"VALUES ($1, $2, $3, $4) RETURNING id", usersTransactionTable)
+		"VALUES ($1, $2, $3, $4, $5) RETURNING id", usersTransactionTable)
 
 	return executeQuery(r.db, query, model.Deposit, transaction)
 }
@@ -92,7 +97,7 @@ func (r *TransactionPostgres) CreateReservation(transaction dto.Transaction) (in
 	id, err := executeQuery(
 		tx,
 		fmt.Sprintf("INSERT INTO %s (transaction_type, producer_id, service_id, amount, description) "+
-			"VALUES ($1, $2, $3, $4, $5) RETURNING id", usersTransactionTable),
+			"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", usersTransactionTable),
 		model.Reservation,
 		transaction,
 	)
@@ -117,7 +122,7 @@ func executeQuery(db queryExecutor, query string, trType model.TransactionType, 
 	case model.Deposit:
 		row = db.QueryRow(query, trType, tr.ConsumerId, tr.Amount, tr.Description)
 	case model.Remittance:
-		row = db.QueryRow(query, trType, tr.ProducerId, tr.ServiceId, tr.ConsumerId, tr.Amount, tr.Description)
+		row = db.QueryRow(query, trType, tr.ProducerId, tr.ConsumerId, tr.Amount, tr.Description)
 	case model.Reservation:
 		row = db.QueryRow(query, trType, tr.ProducerId, tr.Amount, tr.Description)
 	default:

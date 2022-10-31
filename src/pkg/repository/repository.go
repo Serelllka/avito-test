@@ -24,12 +24,14 @@ type Transaction interface {
 }
 
 type Repository struct {
+	Service
 	UserAccount
 	Transaction
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
+		NewServicePostgres(db),
 		NewUserAccountPostgres(db),
 		NewTransactionPostgres(db),
 	}

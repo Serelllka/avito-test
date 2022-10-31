@@ -3,6 +3,7 @@ package repository
 import (
 	"avito-test/dto"
 	"avito-test/model"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -15,7 +16,16 @@ func NewServicePostgres(db *sqlx.DB) *ServicePostgres {
 }
 
 func (r *ServicePostgres) CreateService(service dto.Service) (int, error) {
-	return 0, nil
+	var id int
+	query := fmt.Sprintf("INSERT INTO %s (title, description) VALUES ($1, $2) RETURNING id", servicesTable)
+
+	row := r.db.QueryRow(query, service.Title, service.Description)
+
+	if err := row.Scan(&id); err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 func (r *ServicePostgres) FindServiceById(id int) (model.Service, error) {

@@ -38,5 +38,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		user.POST("/", h.createUser)
 	}
+
+	serv := router.Group("/service")
+	{
+		serv.POST("/", h.CreateService)
+	}
 	return router
 }
