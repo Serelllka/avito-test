@@ -4,6 +4,7 @@ import (
 	"avito-test/dto"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) createUser(c *gin.Context) {
@@ -24,6 +25,20 @@ func (h *Handler) createUser(c *gin.Context) {
 	})
 }
 
-func (h *Handler) GetUserBalance(c *gin.Context) {
+func (h *Handler) getUserBalance(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
+	balance, err := h.services.UserAccount.GetUserAccountBalanceById(id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"balance": balance.Balance,
+	})
 }
