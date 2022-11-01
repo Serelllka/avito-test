@@ -23,3 +23,7 @@ func (h *Handler) createUser(c *gin.Context) {
 		"id": id,
 	})
 }
+
+func (h *Handler) GetUserBalance(c *gin.Context) {
+
+}

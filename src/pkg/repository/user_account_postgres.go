@@ -28,6 +28,13 @@ func (r *UserAccountPostgres) CreateUserAccount(userDto dto.CreateUser) (int, er
 	return id, nil
 }
 
-func (r *UserAccountPostgres) FindUserAccount(id int) (model.UserAccount, error) {
-	return model.UserAccount{}, nil
+func (r *UserAccountPostgres) GetUserAccountBalance(id int) (model.UserAccountBalance, error) {
+	var balance model.UserAccountBalance
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", usersBalanceView)
+	if err := r.db.Get(&balance, query, id); err != nil {
+		return model.UserAccountBalance{}, err
+	}
+
+	return balance, nil
 }

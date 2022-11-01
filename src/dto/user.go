@@ -8,3 +8,7 @@ type UserAccount struct {
 type CreateUser struct {
 	Name string `json:"name"`
 }
+
+type UserAccountBalance struct {
+	Balance uint `json:"balance"`
+}

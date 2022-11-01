@@ -7,7 +7,7 @@ import (
 
 type UserAccount interface {
 	CreateUserAccount(user dto.CreateUser) (int, error)
-	GetUserById(id int) (dto.UserAccount, error)
+	GetUserAccountBalanceById(id int) (dto.UserAccountBalance, error)
 	GetAllUsers() ([]dto.UserAccount, error)
 }
 
@@ -15,8 +15,8 @@ type Transaction interface {
 	CreateRemittance(transaction dto.Remittance) (int, error)
 	CreateDeposit(transaction dto.Deposit) (int, error)
 
-	CreateReservation(transaction dto.Reservation) (int, error)
-	CreatePayment(transaction dto.Reservation) (int, error)
+	CreatePayment(transaction dto.Payment) (int, error)
+	CreateReservation(transaction dto.Reservation) error
 }
 
 type Maintenance interface {

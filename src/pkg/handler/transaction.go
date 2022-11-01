@@ -33,19 +33,17 @@ func (h *Handler) createReservation(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.Transaction.CreateReservation(transaction)
+	err := h.services.Transaction.CreateReservation(transaction)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
-	})
+	c.JSON(http.StatusOK, map[string]interface{}{})
 }
 
 func (h *Handler) createPayment(c *gin.Context) {
-	var transaction dto.Reservation
+	var transaction dto.Payment
 
 	if err := c.BindJSON(&transaction); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

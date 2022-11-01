@@ -13,15 +13,15 @@ type Service interface {
 
 type UserAccount interface {
 	CreateUserAccount(userDto dto.CreateUser) (int, error)
-	FindUserAccount(id int) (model.UserAccount, error)
+	GetUserAccountBalance(id int) (model.UserAccountBalance, error)
 }
 
 type Transaction interface {
 	CreateRemittance(transaction dto.Remittance) (int, error)
 	CreateDeposit(transaction dto.Deposit) (int, error)
 
-	CreateReservation(transaction dto.Reservation) (int, error)
-	CreatePayment(transaction dto.Reservation) (int, error)
+	CreateReservation(transaction dto.Reservation) error
+	CreatePayment(transaction dto.Payment) (int, error)
 }
 
 type Repository struct {

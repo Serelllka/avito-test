@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS reservations
     service_id          INT REFERENCES services(id),
     order_id            INT,
     amount              UINT4                               NOT NULL,
-    description         VARCHAR(255),
     PRIMARY KEY (producer_id, service_id, order_id)
 );
 
