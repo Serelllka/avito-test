@@ -8,9 +8,9 @@ import (
 )
 
 type ReservedTransactionModel struct {
-	ProducerId uint `db:"id"`
-	ServiceId  uint `db:"income"`
-	OrderId    uint `db:"outcome"`
+	ProducerId uint `db:"producer_id"`
+	ServiceId  uint `db:"service_id"`
+	OrderId    uint `db:"order_id"`
 	Amount     uint `db:"amount"`
 }
 
@@ -108,7 +108,7 @@ func (r *TransactionPostgres) CreatePayment(pay dto.Payment) (int, error) {
 	}
 
 	query := fmt.Sprintf(
-		"SELECT FROM %s WHERE producer_id = $2 AND service_id = $3 AND order_id = $4",
+		"SELECT * FROM %s WHERE producer_id = $1 AND service_id = $2 AND order_id = $3",
 		reservationsTable,
 	)
 

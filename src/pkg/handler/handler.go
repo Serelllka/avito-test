@@ -44,7 +44,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		balance := user.Group("/balance")
 		{
-			balance.GET("/:id")
+			balance.GET("/:id", h.getUserBalance)
 		}
 	}
 
