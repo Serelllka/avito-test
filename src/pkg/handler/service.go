@@ -6,14 +6,14 @@ import (
 	"net/http"
 )
 
-func (h *Handler) createUser(c *gin.Context) {
-	var input dto.CreateUser
+func (h *Handler) CreateService(c *gin.Context) {
+	var input dto.Service
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.UserAccount.CreateUserAccount(input)
+	id, err := h.services.Maintenance.CreateService(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -22,8 +22,4 @@ func (h *Handler) createUser(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
-}
-
-func (h *Handler) GetUserBalance(c *gin.Context) {
-
 }

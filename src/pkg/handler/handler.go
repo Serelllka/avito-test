@@ -32,11 +32,25 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			reservation.POST("/", h.createReservation)
 		}
+		payment := transaction.Group("/payment")
+		{
+			payment.POST("/", h.createPayment)
+		}
 	}
 
 	user := router.Group("/user")
 	{
 		user.POST("/", h.createUser)
+
+		balance := user.Group("/balance")
+		{
+			balance.GET("/:id")
+		}
+	}
+
+	serv := router.Group("/service")
+	{
+		serv.POST("/", h.CreateService)
 	}
 	return router
 }

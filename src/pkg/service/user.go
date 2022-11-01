@@ -24,16 +24,15 @@ func (s *UserService) CreateUserAccount(user dto.CreateUser) (int, error) {
 	return id, nil
 }
 
-func (s *UserService) GetUserById(id int) (dto.UserAccount, error) {
-	userModel, err := s.repo.FindUserAccount(id)
+func (s *UserService) GetUserAccountBalanceById(id int) (dto.UserAccountBalance, error) {
+	userModel, err := s.repo.GetUserAccountBalance(id)
 	if err != nil {
 		log.Printf("error while finding user from db: %s", err.Error())
-		return dto.UserAccount{}, err
+		return dto.UserAccountBalance{}, err
 	}
 
-	return dto.UserAccount{
-		Id:   userModel.Id,
-		Name: userModel.Name,
+	return dto.UserAccountBalance{
+		Balance: userModel.Income - userModel.Outcome - userModel.Reserved,
 	}, nil
 }
 
