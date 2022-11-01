@@ -9,6 +9,8 @@ import (
 const (
 	usersTable            = "users_account"
 	usersTransactionTable = "transactions"
+	servicesTable         = "services"
+	reservationsTable     = "reservations"
 	usersBalanceView      = "account_balance"
 )
 

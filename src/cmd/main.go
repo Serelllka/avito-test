@@ -5,6 +5,7 @@ import (
 	"avito-test/pkg/handler"
 	"avito-test/pkg/repository"
 	"avito-test/pkg/service"
+	"github.com/jmoiron/sqlx"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -15,19 +16,7 @@ func main() {
 		log.Fatalf("error while reading config: %s", err.Error())
 	}
 
-	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
-	})
-
-	if err != nil {
-		log.Fatalf("failed to initialize db: %s", err.Error())
-	}
-
+	db := initPostgresDB()
 	repo := repository.NewRepository(db)
 	serv := service.NewService(repo)
 	handl := handler.NewHandler(serv)
@@ -43,4 +32,20 @@ func initConfig() error {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	return viper.ReadInConfig()
+}
+
+func initPostgresDB() *sqlx.DB {
+	db, err := repository.NewPostgresDB(repository.Config{
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
+		Username: viper.GetString("db.username"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
+		Password: os.Getenv("DB_PASSWORD"),
+	})
+
+	if err != nil {
+		log.Fatalf("failed to initialize db: %s", err.Error())
+	}
+	return db
 }

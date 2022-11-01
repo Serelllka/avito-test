@@ -2,38 +2,19 @@ package handler
 
 import (
 	"avito-test/dto"
-	"avito-test/model"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (h *Handler) createRemittance(c *gin.Context) {
-	h.createCustomTransaction(c, model.Remittance)
-}
-
-func (h *Handler) createReservation(c *gin.Context) {
-	h.createCustomTransaction(c, model.Reservation)
-}
-
-func (h *Handler) createDeposit(c *gin.Context) {
-	h.createCustomTransaction(c, model.Deposit)
-}
-
-func (h *Handler) createCustomTransaction(c *gin.Context, trType model.TransactionType) {
-	var transaction dto.Transaction
+	var transaction dto.Remittance
 
 	if err := c.BindJSON(&transaction); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := validateTransaction(&transaction, trType); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	id, err := h.services.Transaction.CreateTransaction(transaction, trType)
+	id, err := h.services.Transaction.CreateRemittance(transaction)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -44,27 +25,57 @@ func (h *Handler) createCustomTransaction(c *gin.Context, trType model.Transacti
 	})
 }
 
-func validateTransaction(transaction *dto.Transaction, trType model.TransactionType) error {
-	switch trType {
-	case model.Remittance:
-		if transaction.ProducerId == 0 || transaction.ConsumerId == 0 {
-			break
-		}
-		return nil
-	case model.Deposit:
-		transaction.ProducerId = 0
-		if transaction.ConsumerId == 0 {
-			break
-		}
-		return nil
-	case model.Reservation:
-		transaction.ConsumerId = 0
-		if transaction.ProducerId == 0 {
-			break
-		}
-		return nil
-	default:
-		return fmt.Errorf("uresolved transaction type %d", trType)
+func (h *Handler) createReservation(c *gin.Context) {
+	var transaction dto.Reservation
+
+	if err := c.BindJSON(&transaction); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
-	return fmt.Errorf("consumer or producer id can't be null with given transaction type: %d", trType)
+
+	err := h.services.Transaction.CreateReservation(transaction)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{})
+}
+
+func (h *Handler) createPayment(c *gin.Context) {
+	var transaction dto.Payment
+
+	if err := c.BindJSON(&transaction); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	id, err := h.services.Transaction.CreatePayment(transaction)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
+}
+
+func (h *Handler) createDeposit(c *gin.Context) {
+	var transaction dto.Deposit
+
+	if err := c.BindJSON(&transaction); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	id, err := h.services.Transaction.CreateDeposit(transaction)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
 }
