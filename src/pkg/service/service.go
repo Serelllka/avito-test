@@ -5,6 +5,8 @@ import (
 	"avito-test/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mock/mock.go
+
 type UserAccount interface {
 	CreateUserAccount(user dto.CreateUser) (int, error)
 	GetUserAccountBalanceById(id int) (dto.UserAccountBalance, error)
