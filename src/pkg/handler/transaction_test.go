@@ -13,16 +13,17 @@ import (
 	"testing"
 )
 
-func TestHandler_Service(t *testing.T) {
-	type mockBehavior func(s *mock_service.MockMaintenance, dto dto.Service)
+func TestHandler_Deposit(t *testing.T) {
+	type mockBehavior func(s *mock_service.MockTransaction, dto dto.Deposit)
 
-	formRequest := func(title, description string) string {
+	formRequest := func(consumerId int, description string, amount int) string {
 		return fmt.Sprintf(`
 			{
-				"title" : "%s",
-				"description" : "%s"
+				"consumerId": %d,
+				"description" : "%s",
+				"amount" : %d
 			}
-		`, title, description)
+		`, consumerId, description, amount)
 	}
 
 	formExpectedBodyFromId := func(id int) string {
@@ -32,7 +33,7 @@ func TestHandler_Service(t *testing.T) {
 	for _, testCase := range []struct {
 		name               string
 		input              string
-		inputDto           dto.Service
+		inputDto           dto.Deposit
 		mockBehavior       mockBehavior
 		expectedStatusCode int
 		expectedBody       string
@@ -40,13 +41,14 @@ func TestHandler_Service(t *testing.T) {
 	}{
 		{
 			name:  "OK",
-			input: formRequest("Service1", "Description1"),
-			inputDto: dto.Service{
-				Title:       "Service1",
-				Description: "Description1",
+			input: formRequest(1, "description1", 100),
+			inputDto: dto.Deposit{
+				ConsumerId:  1,
+				Description: "description1",
+				Amount:      100,
 			},
-			mockBehavior: func(s *mock_service.MockMaintenance, dto dto.Service) {
-				s.EXPECT().CreateService(dto).Return(1, nil)
+			mockBehavior: func(s *mock_service.MockTransaction, dto dto.Deposit) {
+				s.EXPECT().CreateDeposit(dto).Return(1, nil)
 			},
 			expectedStatusCode: 200,
 			reqBody:            true,
@@ -55,18 +57,19 @@ func TestHandler_Service(t *testing.T) {
 		{
 			name:               "BadRequest",
 			input:              `{"description":"%s"}`,
-			mockBehavior:       func(s *mock_service.MockMaintenance, dto dto.Service) {},
+			mockBehavior:       func(s *mock_service.MockTransaction, dto dto.Deposit) {},
 			expectedStatusCode: 400,
 		},
 		{
 			name:  "Server Error",
-			input: formRequest("Service1", "Description1"),
-			inputDto: dto.Service{
-				Title:       "Service1",
-				Description: "Description1",
+			input: formRequest(1, "description1", 100),
+			inputDto: dto.Deposit{
+				ConsumerId:  1,
+				Description: "description1",
+				Amount:      100,
 			},
-			mockBehavior: func(s *mock_service.MockMaintenance, dto dto.Service) {
-				s.EXPECT().CreateService(dto).Return(0, fmt.Errorf("oops"))
+			mockBehavior: func(s *mock_service.MockTransaction, dto dto.Deposit) {
+				s.EXPECT().CreateDeposit(dto).Return(0, fmt.Errorf("oops"))
 			},
 			expectedStatusCode: 500,
 			reqBody:            true,
@@ -77,21 +80,21 @@ func TestHandler_Service(t *testing.T) {
 			c := gomock.NewController(t)
 			defer c.Finish()
 
-			repo := mock_service.NewMockMaintenance(c)
+			repo := mock_service.NewMockTransaction(c)
 			testCase.mockBehavior(repo, testCase.inputDto)
 
 			services := &service.Service{
-				Maintenance: repo,
+				Transaction: repo,
 			}
 			handler := Handler{
 				services,
 			}
 
 			r := gin.New()
-			r.POST("/service/", handler.createService)
+			r.POST("/transaction/deposit/", handler.createDeposit)
 
 			w := httptest.NewRecorder()
-			req := httptest.NewRequest("POST", "/service/",
+			req := httptest.NewRequest("POST", "/transaction/deposit/",
 				bytes.NewBufferString(testCase.input))
 
 			r.ServeHTTP(w, req)

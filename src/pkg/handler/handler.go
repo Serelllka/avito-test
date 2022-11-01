@@ -50,7 +50,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	serv := router.Group("/service")
 	{
-		serv.POST("/", h.CreateService)
+		serv.POST("/", h.createService)
 	}
 	return router
 }
