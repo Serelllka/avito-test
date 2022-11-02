@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) CreateService(c *gin.Context) {
+func (h *Handler) createService(c *gin.Context) {
 	var input dto.Service
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
